@@ -1,0 +1,7 @@
+<h1>Building: <%h @building.building_name %></h1>
+
+<h2> Please choose a dataset: </h2>
+  <% @list_sets.each do |set| %>
+  <%=h set.name %>: <a href="/data_sets/get_table/<%=h set.id %>">Graph</a><br>
+  <% end %>
+<br><br>

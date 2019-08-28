@@ -1,0 +1,250 @@
+    <style type="text/css">
+    	
+    </style>
+	
+	<div>
+	<span style="float:right;"> 
+		<%= @data_set.power_unit.name %> <%if @data_set.power_unit.cost > 0 %> <span id="KWsUsed" style="color:Red; ">0</span>  used | $<span id="totCost2" style="color:#00f;"></span> <%end%>
+	</span>
+</div>
+<h1>Building: <%= @data_set.meter.building.building_name%> (<%= @data_set.power_unit.name %>)</h1>
+<%= form_tag :action=>'get_table' %>
+Date: <%= text_field("dateform", "start_date", :value=>@start_time.strftime("%m/%d/%Y") ) %> 
+<input type="submit" value="Change Dataset Date" />
+   <div id="mydiv" style='width:879px; height:360px;'></div>
+
+   <br/>
+   <br/>
+    	<p> 
+		To modify the displayed graph, you can move the borders on the bottom
+        timeline, and drag the viewed window to show a different section of the
+        graph.
+		</p>
+			
+	<h3>Statistics between selected dates: <span style="color:black">(<span id="startRange"></span>  --  <span id="endRange"></span>)</span></h3>
+	<br/>
+	
+	<%if @data_set.power_unit.cost > 0 %>
+			
+			<div>
+			<div style="float:right">
+				<table>
+					<h3>Average Costs:</h3>
+					<tr>
+						
+						<td><span id="weeks" style="color:Green;">0</span> Weeks</td>
+						<td><span id="days" style="color:Green;">0</span> Days</td>
+						<td><span id="hours" style="color:Green;">0</span> Hours</td>
+						<td><span id="mins" style="color:Green;">0</span> Minutes</td>
+						
+					</tr>
+					<tr>
+						<td>
+							<span id="kPerW" style="color:Red;">0</span>
+							<br/>
+							$<span id="cPerW" style="color:#00f;">0</span>/Week 
+						</td>
+						
+						<td>
+							<span id="kPerD" style="color:Red;">0</span> 
+							<br/>
+							$<span id="cPerD" style="color:#00f;">0</span>/Day
+						</td>
+		
+						<td>
+							<span id="kPerH" style="color:Red;">0</span>
+							<br/>
+							$<span id="cPerH" style="color:#00f;">0</span>/Hour
+						</td>
+						
+						<td>
+							<span id="kPerM" style="color:Red;">0</span>
+							<br/>
+							$<span id="cPerM" style="color:#00f;">0</span>/Minute
+						</td>
+					
+					</tr>
+				</table>
+			</div>
+			<div>
+				<h3>Aggregate Values:</h3>
+				<table>
+				<tr>
+				<td>Total <%= @data_set.power_unit.name %>:</td><td>Total Cost ($<%= @data_set.power_unit.cost %> per <%= @data_set.power_unit.name %>):</td>
+				</tr>
+				<tr>
+				<td><span id="KWsUsed2" style="color:Red;font-size:200%"></span></td><td><center><span style="font-size:200%">$<span id="totCost" style="color:#00f;">0</span></span></center></td>
+				</tr>
+				</table>
+			</div>
+		</div>
+		<%end%>
+		
+		<br/>
+		<center>
+		<div style="margin-left:auto; margin-right:auto;">
+		   <table style=" border:none;  ">
+			   	<tr>
+			   		<td><h3>Highest Amount Registered:</h3> </td>
+					<td><h3>Lowest Amount Registered:</h3></td>
+				</tr>
+				<tr>
+			  		<td> <span style="color:Red;">  <%= @item_bounds.max_amount%> </span> <span style="color:black"><%= @data_set.power_unit.name %>, at <%= @item_bounds.max_time.localtime.strftime("%m/%d/%Y %H:%M")%></span></td>
+			   		<td> <span style="color:Red;"> <%= @item_bounds.min_amount%> </span> <span style="color:black"><%= @data_set.power_unit.name %>, at <%= @item_bounds.min_time.localtime.strftime("%m/%d/%Y %H:%M")%></span></td>
+			   </tr>
+		    </table>   
+		</div>
+		</center>
+
+
+
+<script type="text/javascript">
+		//$(function() {
+			//$("#dateform_start_date").datepicker();
+		//});
+      google.load("visualization", "1", {'packages':['piechart', 'annotatedtimeline']});
+      
+      // Set callback to run when API is loaded
+      google.setOnLoadCallback(drawVisualization); 
+	  	
+  
+      // Called when the Visualization API is loaded.
+  function drawVisualization() {
+        
+        // Create and populate a data table.
+        data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Date');
+        data.addColumn('number', 'KWh');
+	    // Add more data rows and cells here
+        var data1;
+		data1=[
+          <% @item_data.each do |item| %>
+            [new Date(<%= item.date.localtime.strftime("%Y, (%m-1), %d, %H, %M") %>), <%= item.amount %> ],
+          <% end %>
+        ];
+		if(data1[data1.getlastIndexOf]==null){
+			data1.pop();
+		}
+		
+			
+			data.addRows(data1.length);	
+		for ( var i=0; i<data1.length; i++ )
+		{			
+			for( var j = 0; j < 2; j++ )
+				data.setValue(i,j, data1[i][j]);		
+		}
+        // Instantiate our table object.
+        vis = new google.visualization.AnnotatedTimeLine(document.getElementById('mydiv'));
+        // Draw our table with the data we created locally.
+	   vis.draw(data, {thickness: 2, fill: 30, displayAnnotations: false, zoomEndTime: (new Date(<%= @endTime.strftime("%Y, (%m-1), %d-1, %H, %M") %>)), zoomStartTime: (new Date(<%= (@endTime - 1.day).strftime("%Y, (%m-1), %d-1, %H, %M") %>))});
+       google.visualization.events.addListener(vis, 'ready', selectHandler);
+	   google.visualization.events.addListener(vis, 'rangechange', selectHandler);
+	   selectHandler();
+	
+ 
+ 		function getDate(date)
+  		{
+
+	       var day = date.getDate();
+	       var month = date.getMonth()+1;
+	       var yy = date.getYear();
+		   var whichDay = date.getDay();
+	       var year = (yy < 1000) ? yy + 1900 : yy;
+	   
+	       var hours = date.getHours();
+	       var minutes = date.getMinutes();
+	       if (minutes < 10){
+	       	minutes = "0" + minutes;
+	       }
+		   
+			var weekday=new Array(7);
+			weekday[0]="Sunday";
+			weekday[1]="Monday";
+			weekday[2]="Tuesday";
+			weekday[3]="Wednesday";
+			weekday[4]="Thursday";
+			weekday[5]="Friday";
+			weekday[6]="Saturday";
+	     
+		 var value= '('+weekday[whichDay]+') '+month+"/"+day+"/"+year + " " + hours + ":" + minutes;
+	     return value.toString();
+	  }
+ 
+ //this function will add up anything between the dates displayed
+ 	function selectHandler() {
+
+	  
+	   var theDates = vis.getVisibleChartRange(); 
+	   var startDate = theDates.start;
+	   var endDate = theDates.end;
+	   var total=0;
+	   var sumTot=0;
+	   var numRow = data.getNumberOfRows();
+	   var x=0;
+	   var j =0;
+	   var i =0;
+	   var date;
+		for (x=0;x<numRow;x++)
+	  	{
+		    j = parseInt(x);
+		    i = data.getValue(j, 1);
+		    date = data.getValue(j,0);
+		    if(startDate<=date && endDate>=date){   
+		    	total = total+i;
+			}
+		}
+	
+	  var daydif=endDate-startDate;
+	  var secs =daydif/1000;
+	  var mins = secs/60;
+	  var hrs = mins/60;
+	  var day = hrs/24;
+	  var week = day/7;
+	
+	  var kPerW = total/week;
+	  var kPerD = total/day;
+	  var kPerH = total/hrs;
+	  var kPerM = total/mins;
+	  var kPerS = total/secs;
+	  
+	  var money = <%= @data_set.power_unit.cost %>;
+	  var cost = total*money;
+	  var cPerW = kPerW* money;
+	  var cPerD= kPerD*money;
+	  var cPerM= kPerM*money;
+	  var cPerH= kPerH*money;
+	  var cPerS= kPerS*money;
+	  //alert('D H M S '+ cPerD + ' ' + cPerH + ' ' cPerM + ' ' +cPerS);
+	  cost = cost.toFixed(2);
+	  total = total.toFixed(2);
+	  var kws =" "+" <%= @data_set.power_unit.name %>" +'s';
+	  kws = kws.toString();
+	  
+	  
+	  document.getElementById('startRange').innerHTML=getDate(startDate);
+	  document.getElementById('endRange').innerHTML=getDate(endDate);
+	  <%if @data_set.power_unit.cost > 0 %> //if this is not true then all the html will be gone so we cannnot make calls to html that does not exist
+	  document.getElementById('KWsUsed').innerHTML=total.toString();
+	  document.getElementById('KWsUsed2').innerHTML=total.toString();
+	  document.getElementById('totCost').innerHTML=cost.toString();
+	  document.getElementById('totCost2').innerHTML=cost.toString();
+	  document.getElementById('kPerW').innerHTML=kPerW.toFixed(2).toString()+kws;
+	  document.getElementById('cPerW').innerHTML=cPerW.toFixed(2).toString();
+	  document.getElementById('kPerD').innerHTML=kPerD.toFixed(2).toString()+kws;
+	  document.getElementById('cPerD').innerHTML=cPerD.toFixed(2).toString();
+	  document.getElementById('kPerH').innerHTML=kPerH.toFixed(2).toString()+kws;
+	  document.getElementById('cPerH').innerHTML=cPerH.toFixed(2).toString();
+	  document.getElementById('kPerM').innerHTML=kPerM.toFixed(2).toString()+kws;
+	  document.getElementById('cPerM').innerHTML=cPerM.toFixed(2).toString();
+	  //document.getElementById('kPerS').innerHTML=kPerS.toFixed(2).toString()+kws;
+	  //document.getElementById('cPerS').innerHTML=cPerS.toFixed(2).toString();
+	  document.getElementById('weeks').innerHTML=week.toFixed(2).toString();
+	  document.getElementById('days').innerHTML=day.toFixed(2).toString();
+	  document.getElementById('hours').innerHTML=hrs.toFixed(2).toString();
+	  document.getElementById('mins').innerHTML=mins.toFixed(2).toString();
+	  //document.getElementById('secs').innerHTML=secs.toFixed(2).toString();
+	  <%end%>
+	 }
+ 
+ }
+     </script>

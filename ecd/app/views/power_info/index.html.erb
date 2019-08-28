@@ -1,0 +1,6 @@
+<h1>Select a building to view sets of data.</h1>
+
+<% @buildings.each do |building| %>
+<a href="/power_info/showsets/<%=h building.id %>"><%=h building.building_name %></a><br>
+<% end %>
+<br><br>

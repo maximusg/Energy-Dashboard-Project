@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" style="background-color:#CECECE;">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  	<title><%= @page_title %> | Energy Dashboard | Oregon State University</title>
+  	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+	
+	<%= stylesheet_link_tag 'custum_style' %>
+	<%= stylesheet_link_tag 'grey-master' %>
+	<%= stylesheet_link_tag 'user' %>
+	<link type="text/css" rel="stylesheet" media="all" href="http://oregonstate.edu/tools/css/yui/2.7.0/reset-fonts-grids.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="http://oregonstate.edu/tools/css/osu-base/0.2-beta/osu-base.css" />
+
+    <!--<%= javascript_include_tag "mytablevis" %>-->
+	<%= javascript_include_tag "application" %>
+	<!--<%= javascript_include_tag "jquery.min" %>
+	<%= javascript_include_tag "jquery-ui-1.8b1.custom.min" %>-->
+	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.1.min.js" ></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+</head>
+
+<body>
+<!-- START Accessibility NAV LINK -->
+<div><a name="top" id="navigation-top"></a></div>
+<div id="skip-to-nav">
+<a href="#navigation">Skip to Navigation</a>
+</div>
+<!-- END Accessibility NAV LINK -->
+    
+<!--  START OSU TOP HAT -->
+
+<div id="osu-top-hat">
+<div id="top-hat-interior">
+<a href="http://oregonstate.edu"><img alt="OSU Logo" src="http://oregonstate.edu/u_central/images/blackWordmark.gif"></a>
+<ul>
+<li><a href="http://catalog.oregonstate.edu/">Catalog</a></li>
+<li><a href="http://calendar.oregonstate.edu/">Calendar</a></li>
+<li><a href="http://oregonstate.edu/findsomeone/">Find Someone</a></li>
+<li><a href="http://oregonstate.edu/campusmap/">Maps</a></li>
+<li class="last"><a href="http://oregonstate.edu/siteindex.php">A-Z Index</a></li>
+</ul>
+</div>
+</div>
+
+<!--  END OSU TOP HAT -->
+
+<div id="doc4" class="yui-t2">	
+<!-- PAGE WRAPPER -->
+<div id="page">
+<div id="page-inner">
+<div id="hd">
+				
+<!-- START HEADER -->
+<div id="header">
+<div id="small_header_banner">
+<div id="site-name">
+<a href="/">Energy Dashboard</a>	      	
+</div><!-- end site name -->	
+</div> <!-- /#header-inner -->
+                          
+<div id="navbar-region">
+
+<!--<div class="search">
+
+<form action="search"  accept-charset="UTF-8" method="post" id="osu-search-image-submit-template-form">
+<div><div class="form-item" id="osu-search-query-wrapper">
+ <input type="text" maxlength="128" name="search-query" id="osu-search-query"  value="" class="form-text" />
+</div>
+<div class="form-item" id="osu-search-scope-wrapper">
+ <label class="option"><input type="checkbox" name="search-scope" id="osu-search-scope" value="1"   class="form-checkbox" /> Search all of OSU.</label>
+</div>
+<input type="submit" name="op" id="osu-search-submit" value="Search"  class="form-submit" />
+<input type="hidden" name="form_token" id="edit-osu-search-template-form-form-token" value="d3ed2d07465679731e25f80ff1e252b5"  />
+<input type="hidden" name="form_id" id="edit-osu-search-template-form" value="osu_search_template_form"  />
+
+</div></form>
+
+</div> -->
+
+
+<!-- BEGIN HORIZONTAL NAVIGATION -->
+<div class="block block-menu">
+<div class="block-inner">
+<div class="content">
+
+<ul class="menu">
+<li class="leaf first"><a href="/" class="home_screen_button">Home</a></li>
+<li class="leaf"><a href="/power_info" class="power_info_button">Power Info</a></li>
+<li class="leaf"><a href="/help" class="help_button">Help</a></li>
+<li class="leaf"><a href="/about_us" class="about_us_button">About Us</a></li>
+<li class="leaf last"><a href="/admin" class="admin_button">Admin</a></li>
+</ul>
+
+</div>  <!--END HORIZONTAL NAVIGATION -->
+
+</div></div> <!-- /block-inner, /block -->
+
+<div style="clear:both"></div>
+</div>
+</div> <!-- /#header -->
+<!-- END HEADER -->
+</div> <!-- /hd -->
+
+<div id="bd" role="main">
+<div id="yui-main">
+<div style="margin-left: 50px; margin-right: 30px; width: auto;">
+
+<div class="interior">
+											
+<!-- START MAIN -->		
+<div id="main">
+  <div id="main-inner" class="clear-block">
+<div id="content">
+<div id="content-inner">
+  <%= render_crumbs %>
+<div class="content">
+<%= yield%>
+
+</div><!-- end content  -->
+</div> <!-- /#content-inner -->
+</div> <!-- /#content -->
+</div> <!-- /#main-inner -->
+</div> <!-- /#main -->
+<!-- END MAIN -->
+</div> <!-- interior -->
+
+</div> <!-- /style -->
+</div> <!-- /yui-main -->
+
+
+</div> <!-- /main -->
+				
+<div id="ft" role="contentinfo">
+<!-- START DRUPAL FOOTER -->
+<div id="footer-inner"> 
+
+Greg Smith<br />
+Facilities Services<br />
+Oregon State University<br />
+130 Oak Creek<br />
+Corvallis, OR 97331-2001<br />
+Greg.Smith AT oregonstate.edu<br />
+<br />
+
+</div>
+<!-- END Custom FOOTER -->
+				
+<!--  START DEFAULT OSU FOOTER TEXT -->
+<div id="footer-default">
+<a href="http://oregonstate.edu/about/copyright">Copyright</a>
+&copy; <%=Time.now.strftime("%Y")%> Oregon State University | 
+<a href="http://oregonstate.edu/about/disclaimer">Disclaimer</a>
+</div>
+<!--  END DEFAULT OSU FOOTER TEXT -->
+</div> <!-- /ft -->
+</div> <!-- /#page-inner -->
+</div> <!-- /#page -->
+</div> <!-- /doc -->
+</body>
+</html>
+
+
+

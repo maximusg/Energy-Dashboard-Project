@@ -1,0 +1,17 @@
+
+
+<p>
+  <b>Building:</b>
+  <%=h @meter.building_id %>
+</p>
+
+
+<p>
+  <b>Modbus address:</b>
+  <%=h @meter.modbus_address %>
+</p>
+
+
+
+<%= link_to 'Edit', edit_meter_path(@meter) %> |
+<%= link_to 'Back', meters_path %>
